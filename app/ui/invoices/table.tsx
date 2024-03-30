@@ -1,8 +1,8 @@
-import Image from 'next/image';
-import { UpdateInvoice, DeleteInvoice } from '@/app/ui/invoices/buttons';
-import InvoiceStatus from '@/app/ui/invoices/status';
-import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
 import { fetchFilteredInvoices } from '@/app/lib/data';
+import { formatCurrency, formatDateToLocal } from '@/app/lib/utils';
+import { DeleteInvoice, UpdateInvoice } from '@/app/ui/invoices/buttons';
+import InvoiceStatus from '@/app/ui/invoices/status';
+import Image from 'next/image';
 
 export default async function InvoicesTable({
   query,
@@ -12,6 +12,12 @@ export default async function InvoicesTable({
   currentPage: number;
 }) {
   const invoices = await fetchFilteredInvoices(query, currentPage);
+
+  if (invoices.length === 0) {
+    return (
+      <div className="mt-12 text-center text-5xl font-bold">No results :(</div>
+    );
+  }
 
   return (
     <div className="mt-6 flow-root">
@@ -39,6 +45,7 @@ export default async function InvoicesTable({
                   </div>
                   <InvoiceStatus status={invoice.status} />
                 </div>
+
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
                     <p className="text-xl font-medium">
@@ -54,6 +61,7 @@ export default async function InvoicesTable({
               </div>
             ))}
           </div>
+
           <table className="hidden min-w-full text-gray-900 md:table">
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
@@ -77,6 +85,7 @@ export default async function InvoicesTable({
                 </th>
               </tr>
             </thead>
+
             <tbody className="bg-white">
               {invoices?.map((invoice) => (
                 <tr
